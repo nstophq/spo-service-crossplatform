@@ -39,7 +39,7 @@ These take seconds and confirm the pre-auth boundary behaves on this machine.
 
 | Check | Command | Expected |
 | --- | --- | --- |
-| Spoofed host refused | `Connect-SPOService -Url https://contoso-admin.sharepoint.com.example` | Error names the host, mentions `https://<tenant>-admin.sharepoint.com`, no vendor module loaded, no browser |
+| Spoofed host refused | `Connect-SPOService -Url https://contoso-admin.sharepoint.com.example` | Error names the host only (no credentials or query echoed), mentions `https://<tenant>-admin.sharepoint.com`, no browser. The vendor module shows as loaded: `RequiredModules` imports it with ours, before any of our code runs |
 | Headless guard | `$env:SSH_CONNECTION='x'; Remove-Item Env:DISPLAY,Env:WAYLAND_DISPLAY -EA 0; Connect-SPOService -Url https://contoso-admin.sharepoint.com` | Error mentions interactive sign-in and `-CertificatePath`; no browser opens. Then `Remove-Item Env:SSH_CONNECTION` |
 | Tag too long | `Connect-SPOService -Url https://contoso-admin.sharepoint.com -ClientTag abcdefghijklmn` | Parameter validation error, 13-character limit |
 
@@ -89,7 +89,11 @@ Also confirm: browser opens, sign-in completes, control returns to the prompt, a
 
 Record: same fields as Row 1, auth flow "system browser (URL-only default)".
 
-Ctrl+C check: start a URL-only Connect, press Ctrl+C before completing sign-in. Expected: prompt returns immediately, `Get-SPOTenant` fails with no connection, the browser tab may remain until the vendor timeout. Record: pass / fail.
+Ctrl+C check: start a URL-only Connect, then either press Ctrl+C or close the
+browser without signing in. Expected: the prompt returns within about a second
+(not after the vendor's 90-second timeout), `Get-SPOTenant` fails with no
+connection, and the browser tab may remain until the vendor times out. Record:
+pass / fail. (`0.3.0-rc1` failed this: the prompt was blocked for the full 90 s.)
 
 ### Row 3: Ubuntu x64, current vendor, certificate auth (required)
 
@@ -102,21 +106,21 @@ Same as Row 2 on a Linux desktop session. If only SSH is available, record
 that the headless guard refused with the expected message and mark the row
 "narrowed out: no desktop".
 
-### Row 5: declared minimum vendor 16.0.23408.12000 (required, macOS or Ubuntu)
+### Row 5: declared minimum vendor 16.0.26615.12013 (required, macOS or Ubuntu)
 
 The connect cmdlet reuses whatever vendor version is already loaded if it meets
 the floor, so load the minimum explicitly in a fresh session before connecting:
 
 ```powershell
-Install-Module Microsoft.Online.SharePoint.PowerShell -RequiredVersion 16.0.23408.12000 -Scope CurrentUser -Force
-Import-Module Microsoft.Online.SharePoint.PowerShell -RequiredVersion 16.0.23408.12000
+Install-Module Microsoft.Online.SharePoint.PowerShell -RequiredVersion 16.0.26615.12013 -Scope CurrentUser -Force
+Import-Module Microsoft.Online.SharePoint.PowerShell -RequiredVersion 16.0.26615.12013
 Import-Module SPOService.CrossPlatform -Force
 Connect-SPOService -Url <admin-url> -ClientId <id> -TenantId <id> -CertificatePath <pfx> -CertificatePassword (Read-Host -AsSecureString)
 Get-SPOTenant | Out-Null
 Get-SPOSite -Limit 5 | Out-Null
 ```
 
-Record: same fields as Row 1; vendor version must read 16.0.23408.12000.
+Record: same fields as Row 1; vendor version must read 16.0.26615.12013.
 Browser flow on this row is optional.
 
 ## Result
@@ -133,5 +137,5 @@ Browser flow on this row is optional.
 2. Tag `v0.3.0` on the merged commit and push; approve the `PSGallery Publishing`
    environment when the workflow pauses.
 3. Confirm `Find-Module SPOService.CrossPlatform` shows 0.3.0 with the
-   `Microsoft.Online.SharePoint.PowerShell >= 16.0.23408.12000` dependency.
+   `Microsoft.Online.SharePoint.PowerShell >= 16.0.26615.12013` dependency.
 4. Leave 0.2.0 listed. Its dependency-floor defect is documented in the CHANGELOG.

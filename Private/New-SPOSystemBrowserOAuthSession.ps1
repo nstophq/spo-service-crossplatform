@@ -33,7 +33,11 @@ function New-SPOSystemBrowserOAuthSession {
     if (-not $signInMethod) {
         throw "Internal error: Microsoft.Online.SharePoint.PowerShell.OAuthSession.SignIn(string) is not present in the installed SPO module. System-browser interactive auth requires a newer SPO module."
     }
-    $signInTask = $signInMethod.Invoke($oauthSession, @($Url.AbsoluteUri))
+    # The vendor's SignIn blocks its calling thread for the whole sign-in (see
+    # BackgroundInvoker). Run it on the thread pool so this thread can poll and
+    # Ctrl+C returns the prompt instead of waiting out the vendor's 90 s timer.
+    $signInTask = [SPOService.CrossPlatform.BackgroundInvoker]::InvokeAsync(
+        $signInMethod, $oauthSession, [object[]]@([string]$Url.AbsoluteUri))
 
     Wait-SPOAuthenticationTask -Task $signInTask
     return $oauthSession
