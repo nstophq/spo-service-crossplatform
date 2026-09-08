@@ -38,7 +38,7 @@
 
     PrivateData = @{
         PSData = @{
-            Prerelease   = 'rc1'
+            Prerelease   = 'rc2'
             Tags         = @(
                 'SharePoint'
                 'SharePointOnline'

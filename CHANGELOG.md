@@ -13,7 +13,8 @@ Stabilisation release ahead of 1.0. Fixes the `0.2.0` package's corrupted
 dependency floor, hardens the pre-authentication boundary (admin URL shape,
 deterministic vendor selection, reflected-API probe), and makes the URL-only
 quick start actually start interactive sign-in. Published first as `0.3.0-rc1`
-for manual verification on macOS and Linux.
+and `0.3.0-rc2` for manual verification on macOS and Linux; rc2 fixes the two
+findings from the rc1 matrix (Ctrl+C during browser sign-in, vendor floor).
 
 ### Changed
 

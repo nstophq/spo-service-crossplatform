@@ -1,6 +1,6 @@
 # Release 0.3.0 manual verification
 
-Manual, tenant-dependent checks for `0.3.0-rc1` before promoting to `0.3.0`.
+Manual, tenant-dependent checks for `0.3.0-rc2` (rc1 findings fixed) before promoting to `0.3.0`.
 Automated CI already covers build, import, parameter binding, URL validation,
 vendor-contract probing and packaging on macOS and Ubuntu; this file records
 what CI cannot do: real authentication and real CSOM traffic.
@@ -17,7 +17,7 @@ a substitute for reading what you paste.
 Install the release candidate into the current user scope in a fresh session:
 
 ```powershell
-Install-Module SPOService.CrossPlatform -AllowPrerelease -RequiredVersion 0.3.0-rc1 -Scope CurrentUser
+Install-Module SPOService.CrossPlatform -AllowPrerelease -RequiredVersion 0.3.0-rc2 -Scope CurrentUser
 Import-Module SPOService.CrossPlatform -Force
 (Get-Module SPOService.CrossPlatform).Version          # 0.3.0
 (Get-Command Connect-SPOService).ResolvedCommand.Name   # Connect-SPOServiceCrossPlatform
@@ -70,7 +70,7 @@ Record:
 - OS/version, architecture:
 - PowerShell version:
 - Runtime (FrameworkDescription):
-- SPOService.CrossPlatform version: 0.3.0-rc1
+- SPOService.CrossPlatform version: 0.3.0-rc2
 - Vendor module version loaded (`(Get-Module Microsoft.Online.SharePoint.PowerShell).Version`):
 - Auth flow: certificate (PFX path)
 - Connect: pass / fail
