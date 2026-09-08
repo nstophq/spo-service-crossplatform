@@ -127,7 +127,7 @@ Browser flow on this row is optional.
 
 - All required rows pass: yes / no
 - Defects found (link issues):
-- Decision: promote to 0.3.0 / cut rc2
+- Decision: promote to 0.3.0 / cut the next RC (rc3)
 - Signed off by, date:
 
 ## Promotion steps (after sign-off)

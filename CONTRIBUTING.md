@@ -152,6 +152,7 @@ Run the standalone, non-tenant checks after installing the vendor dependency:
 ./tests/AdminUrl.Tests.ps1
 ./tests/ConnectBinding.Tests.ps1
 ./tests/VendorContract.Tests.ps1
+./tests/NativeShim.Tests.ps1
 ./tests/ConnectFailure.Tests.ps1
 ./tests/EnvFile.Tests.ps1
 ./tests/StageModule.Tests.ps1
